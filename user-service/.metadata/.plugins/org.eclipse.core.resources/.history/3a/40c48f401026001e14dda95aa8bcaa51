@@ -1,0 +1,78 @@
+package com.user.service.services.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import org.hibernate.boot.jaxb.hbm.spi.JaxbHbmOneToManyCollectionElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.user.service.entity.Rating;
+import com.user.service.entity.User;
+import com.user.service.exception.ResourceNotFoundException;
+import com.user.service.repository.UserRepository;
+import com.user.service.services.UserService;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	@Override
+	public User saveUser(User user) {
+		// generate unique userId
+		String randomUserId = UUID.randomUUID().toString();
+		user.setUserId(randomUserId);
+		return userRepository.save(user);
+	}
+
+	@Override
+	public List<User> getAllUser() {
+
+		// implement RATING SERVICE CALL: USING REST TEMPLATE
+		return userRepository.findAll();
+	}
+
+	// get Single User
+	@Override
+	public User getUser(String userId) {
+		// get user form database with the help of user repository
+		User user = userRepository.findById(userId).orElseThrow(
+				() -> new ResourceNotFoundException("User given id is not Found on server !! :: " + userId));
+		// fetch rating of the above user form RATING SERVICE
+		// http://localhost:8083/ratings/users/9f6c01f2-8a57-4e8e-81d3-851fa2ad59de
+		ArrayList<Rating> ratingsOfUser = restTemplate
+				.getForObject("http://localhost:8083/ratings/users/" + user.getUserId(), ArrayList.class);
+		logger.info("{}", ratingsOfUser);
+
+		List<Rating> ratingList = ratingsOfUser.stream().map(rating -> {
+			// api call to hotel service to get the hotel
+			// http://localhost:8082/hotels/3b3fdaca-04e4-486a-abec-3b2868044831
+			ResponseEntity<Hotel> forEntity = restTemplate
+					.getForEntity("http://localhost:8082/hotels/3b3fdaca-04e4-486a-abec-3b2868044831", Hotel.class);
+			Hotel hotel = forEntity.getBody();
+			logger.info("response status code : {}", forEntity.getStatusCode());
+			// set the hotel to rating
+			// return the rating
+			return rating;
+		}).collect(Collectors.toList());
+
+		user.setRatings(ratingList);
+
+		return user;
+	}
+
+}

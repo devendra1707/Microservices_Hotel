@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-config-server=1
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-eureka=1
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.artifactId=ConfigServer
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.bootVersion=3.0.9
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.description=This is configuration server
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.groupId=com.config.server
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.javaVersion=17
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.language=java
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.name=ConfigServer
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.packageName=com.config.server
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.packaging=jar
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.type=MAVEN
+org.springframework.ide.eclipse.boot.wizard.PreferredSelections.version=0.0.1-SNAPSHOT
+org.springframework.ide.eclipse.boot.wizard.initializr.url=https\://start.spring.io\n

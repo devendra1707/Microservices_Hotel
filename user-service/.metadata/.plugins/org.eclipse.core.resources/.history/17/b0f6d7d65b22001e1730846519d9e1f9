@@ -1,0 +1,14 @@
+package com.user.service.exception;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.user.service.paylod.ApiResponce;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+	public ResponseEntity<ApiResponce> handlerResourseNotFoundException(){
+		
+	}
+}

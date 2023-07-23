@@ -1,0 +1,115 @@
+server:
+  port: 8081
+  
+spring:
+  application:
+    name: USER-SERVICE 
+
+#  profiles:
+#    active:
+#    - prod
+  config: 
+    import:
+     optional:configserver:http://localhost:8085
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/us
+    username: root
+    password: Admin@123
+    driver-class-name:  com.mysql.cj.jdbc.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+      
+    show-sql: true
+    properties:
+        hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-15277241.okta.com/oauth2/default
+      client:
+        registration:
+          my-internal-client:
+           provider: okta
+           authorization-grant-type: client_credentials
+           scope: internal
+           client-id: 0oaahf5otiUrTzvjq5d7
+           client-secret: 4hOXXqZ2x1So0tCx-0ENyhn6deXv54DOGfLMiomiqxeQfZPKFEzMwWstw61lBV9x
+     
+           
+          
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+
+  
+   
+   
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health 
+          
+  endpoint:
+    health:
+      show-details: always
+     
+   
+   
+   
+resilience4j:
+  circuitbreaker:
+    instances:
+     ratingHotelBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6s
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-size: 10
+        sliding-window-type: count-based
+      
+        
+  retry:
+    instances:
+      ratingHotelService:
+       max-attempts: 3
+       wait-duration: 5s  
+   
+
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 0s
+   
+   
+#  okta configuration for api gateway
+okta:
+  oauth2:
+    issuer: https://dev-15277241.okta.com/oauth2/default
+    audience: api://default
+       
+   
+   
+   
+   
+   
+   
